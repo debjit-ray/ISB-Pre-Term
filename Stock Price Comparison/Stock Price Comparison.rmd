@@ -1,0 +1,259 @@
+---
+title: "Stock Price Comparison"
+author: "Debjit Ray"
+date: "15/03/2020"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+10. Find the daily stock price of Wal-.- Mart for the last three months. (A good source for the data is
+http://moneycentral.msn.com or Yahoo Finance or Google Finance (there are many more such sources).
+You can ask for the three-.-month chart and export the data to a spreadsheet.) 
+(a) Calculate the mean and the standard deviation of the stock prices.
+(b) Get the corresponding data for Kmart and calculate the mean and the standard deviation.
+(c) The coefficient of variation (CV)is defined as the ratio of the standard deviation over the mean.
+Calculate the CV of Wal-.-Mart and Kmart stock prices.
+(d) If the CV of the daily stock prices is taken as an indicator of risk of the stock, how do Wal-.-Mart and Kmart stocks compare in terms of risk? (There are better measures of risk, but we will use CV in this exercise.)
+(e) Get the corresponding data of the Dow Jones Industrial Average (DJIA) and compute its CV. How
+do Wal-.- Mart and Kmart stocks compare with the DJIA in terms of risk?
+(f) Suppose you bought 100 shares of Wal-.-Mart stock three months ago and held it. What are the mean
+and the standard deviation of the daily market price of your holding for the three months?
+
+### Solution
+
+```{r Solution - 10.a}
+#-------------------------------------------------------------------------------------------------------
+# (a) Mean and Standard Deviation for Walmart
+#-------------------------------------------------------------------------------------------------------
+# Download the file into the data folder
+fileUrl <-"https://query1.finance.yahoo.com/v7/finance/download/WMT?period1=1552848067&period2=1584470467&interval=1d&events=history"
+if (!file.exists("./data/WalmartStockPrice.csv")){
+  download.file(fileUrl, destfile = "./data/WalmartStockPrice.csv")
+  print (paste("File downloaded on: ", date()))
+}
+
+# Read the downloaded data into a dataframe
+WalmartPrice <- read.csv("./data/WalmartStockPrice.csv",header = TRUE, stringsAsFactors = FALSE)
+
+#Calculate the average prices
+avgWMTOpen <- mean(WalmartPrice$Open)
+avgWMTHigh <- mean(WalmartPrice$High)
+avgWMTLow <- mean(WalmartPrice$Low)
+avgWMTClose <- mean(WalmartPrice$Close)
+avgWMTAdjClose <- mean(WalmartPrice$Adj.Close)
+#Calculate the standard deviations of the prices
+sdWMTOpen <- round(sd(WalmartPrice$Open), digits = 5)
+sdWMTHigh <- round(sd(WalmartPrice$High), digits = 5)
+sdWMTLow <- round(sd(WalmartPrice$Low), digits = 5)
+sdWMTClose <- round(sd(WalmartPrice$Close), digits = 5)
+sdWMTAdjClose <- round(sd(WalmartPrice$Adj.Close), digits = 5)
+dateRangeStartWMT <- min(WalmartPrice$Date)
+dateRangeEndWMT <- max(WalmartPrice$Date)
+
+# Store the results into a dataframe
+resultsDF <- data.frame("Walmart","WMT",dateRangeStartWMT, dateRangeEndWMT, 
+                        "Open_Price", avgWMTOpen, sdWMTOpen, 
+                        stringsAsFactors = FALSE)
+resultsDF[nrow(resultsDF) + 1,] <- list("Walmart","WMT",dateRangeStartWMT, dateRangeEndWMT,
+                                        "High_Price", avgWMTHigh,  sdWMTHigh)
+resultsDF[nrow(resultsDF) + 1,] <- list("Walmart","WMT",dateRangeStartWMT, dateRangeEndWMT,
+                                        "Low_Price", avgWMTLow,  sdWMTLow)
+resultsDF[nrow(resultsDF) + 1,] <- list("Walmart","WMT",dateRangeStartWMT, dateRangeEndWMT,
+                                        "Close_Price", avgWMTClose,  sdWMTClose)
+resultsDF[nrow(resultsDF) + 1,] <- list("Walmart","WMT",dateRangeStartWMT, dateRangeEndWMT,
+                                        "Adjusted_Close_Price", avgWMTAdjClose,  sdWMTAdjClose)
+
+# All column names to the dataframe
+colnames(resultsDF) <- list("Stock_Name","Stock_Symbol","Start_Date","End_Date","Price_Type",
+                            "Mean_Price", "SD_Price")
+# Display the data
+resultsDF[which (resultsDF$Stock_Symbol == "WMT"),]
+```
+
+```{r Solution - 10.b}
+#-------------------------------------------------------------------------------------------------------
+# (b) Mean and Standard Deviation for Sears
+#-------------------------------------------------------------------------------------------------------
+# Download the file into the data folder
+fileUrl <-"https://query1.finance.yahoo.com/v7/finance/download/SHLDQ?period1=1579305600&period2=1584489600&interval=1d&events=history"
+if (!file.exists("./data/SearsStockPrice.csv")){
+  download.file(fileUrl, destfile = "./data/SearsStockPrice.csv")
+  print (paste("Sears Stock Price File downloaded on: ", date()))
+}
+
+# Read the downloaded data into a dataframe
+searsPrice <- read.csv("./data/SearsStockPrice.csv",header = TRUE, stringsAsFactors = FALSE)
+
+#Calculate the average prices
+avgSHLDQOpen <- mean(searsPrice$Open)
+avgSHLDQHigh <- mean(searsPrice$High)
+avgSHLDQLow <- mean(searsPrice$Low)
+avgSHLDQClose <- mean(searsPrice$Close)
+avgSHLDQAdjClose <- mean(searsPrice$Adj.Close)
+#Calculate the standard deviations of the prices
+sdSHLDQOpen <- round(sd(searsPrice$Open), digits = 5)
+sdSHLDQHigh <- round(sd(searsPrice$High), digits = 5)
+sdSHLDQLow <- round(sd(searsPrice$Low), digits = 5)
+sdSHLDQClose <- round(sd(searsPrice$Close), digits = 5)
+sdSHLDQAdjClose <- round(sd(searsPrice$Adj.Close), digits = 5)
+dateRangeStartSHLDQ <- min(searsPrice$Date)
+dateRangeEndSHLDQ <- max(searsPrice$Date)
+
+# Add the result for Sears to the dataframe
+
+resultsDF[nrow(resultsDF) + 1,] <- list("Sears","SHLDQ",dateRangeStartSHLDQ, dateRangeEndSHLDQ,
+                                        "Open_Price", avgSHLDQOpen,  sdSHLDQOpen)
+resultsDF[nrow(resultsDF) + 1,] <- list("Sears","SHLDQ",dateRangeStartSHLDQ, dateRangeEndSHLDQ,
+                                        "High_Price", avgSHLDQHigh,  sdSHLDQHigh)
+resultsDF[nrow(resultsDF) + 1,] <- list("Sears","SHLDQ",dateRangeStartSHLDQ, dateRangeEndSHLDQ,
+                                        "Low_Price", avgSHLDQLow,  sdSHLDQLow)
+resultsDF[nrow(resultsDF) + 1,] <- list("Sears","SHLDQ",dateRangeStartSHLDQ, dateRangeEndSHLDQ,
+                                        "Close_Price", avgSHLDQClose,  sdSHLDQClose)
+resultsDF[nrow(resultsDF) + 1,] <- list("Sears","SHLDQ",dateRangeStartSHLDQ, dateRangeEndSHLDQ,
+                                        "Adjusted_Close_Price", avgSHLDQAdjClose, sdSHLDQAdjClose)
+
+#Display the data
+resultsDF[which (resultsDF$Stock_Symbol == "SHLDQ"),]
+```
+
+```{r Solution - 10.c}
+#-------------------------------------------------------------------------------------------------------
+# (c) Calculate the Coefficient of Variation for Walmart and Sears
+#-------------------------------------------------------------------------------------------------------
+
+# Calculate the coefficient of variation and append the details to the data frame
+resultsDF <- cbind(resultsDF,list(
+          "CV" = round(resultsDF$SD_Price/resultsDF$Mean_Price,5)))
+# Display the data
+resultsDF
+```
+
+```{r Solution - 10.d}
+#-------------------------------------------------------------------------------------------------------
+# (d) Plot a graph to relatively compare the Coefficient of Variation of the prices
+#-------------------------------------------------------------------------------------------------------
+
+library(ggplot2)
+ggplot(resultsDF, aes(resultsDF$Price_Type, resultsDF$CV )) + geom_point(aes(color = resultsDF$Stock_Name)) + ggtitle("Comparison of Coefficient of Variation") + labs(x = "Price Type", y = "Coefficient of Variation") + labs(color='Stock Name')
+
+```
+  
+As evident from the plotted graph, the Coefficient of Variation for Sears is much higher than Walmart. This means the price swing (standard deviation) as compared to the mean price for Sears can vary more on both positive and negative side, thus, yielding more positive/ negative returns. In other words, the returns compared to the risk of investment in Sears is more than that in Walmart. 
+
+ **Hence, Sears is the more risky option. **
+
+```{r Solution - 10.e}
+#-------------------------------------------------------------------------------------------------------
+# (e) Get the corresponding data for Dow Jones Industrial Estate and compare against Sears and Walmart
+#-------------------------------------------------------------------------------------------------------
+# Download the file into the data folder
+fileUrl <-"https://query1.finance.yahoo.com/v7/finance/download/%5EDJI?period1=1579305600&period2=1584489600&interval=1d&events=history"
+if (!file.exists("./data/DowJones.csv")){
+  download.file(fileUrl, destfile = "./data/DowJones.csv")
+  print (paste("Dow Jones Industrial Average File downloaded on: ", date()))
+}
+
+# Read the downloaded data into a dataframe
+DowJonesPrice <- read.csv("./data/DowJones.csv",header = TRUE, stringsAsFactors = FALSE)
+
+#Calculate the average prices
+avgDJIAOpen <- mean(DowJonesPrice$Open)
+avgDJIAHigh <- mean(DowJonesPrice$High)
+avgDJIALow <- mean(DowJonesPrice$Low)
+avgDJIAClose <- mean(DowJonesPrice$Close)
+avgDJIAAdjClose <- mean(DowJonesPrice$Adj.Close)
+#Calculate the standard deviations of the prices
+sdDJIAOpen <- round(sd(DowJonesPrice$Open), digits = 5)
+sdDJIAHigh <- round(sd(DowJonesPrice$High), digits = 5)
+sdDJIALow <- round(sd(DowJonesPrice$Low), digits = 5)
+sdDJIAClose <- round(sd(DowJonesPrice$Close), digits = 5)
+sdDJIAAdjClose <- round(sd(DowJonesPrice$Adj.Close), digits = 5)
+dateRangeStartDJIA <- min(DowJonesPrice$Date)
+dateRangeEndDJIA <- max(DowJonesPrice$Date)
+
+# Add the result for DowJones to the dataframe
+
+resultsDF[nrow(resultsDF) + 1,] <- list("DowJones","DJIA",dateRangeStartDJIA, dateRangeEndDJIA,
+                                        "Open_Price", avgDJIAOpen,  sdDJIAOpen,
+                                        round(sdDJIAOpen/avgDJIAOpen,5))
+resultsDF[nrow(resultsDF) + 1,] <- list("DowJones","DJIA",dateRangeStartDJIA, dateRangeEndDJIA,
+                                        "High_Price", avgDJIAHigh,  sdDJIAHigh,
+                                        round(sdDJIAHigh/avgDJIAHigh,5))
+resultsDF[nrow(resultsDF) + 1,] <- list("DowJones","DJIA",dateRangeStartDJIA, dateRangeEndDJIA,
+                                        "LowPrice", avgDJIALow,  sdDJIALow,
+                                        round(sdDJIALow/avgDJIALow,5))
+resultsDF[nrow(resultsDF) + 1,] <- list("DowJones","DJIA",dateRangeStartDJIA, dateRangeEndDJIA,
+                                        "Close_Price", avgDJIAClose,  sdDJIAClose,
+                                        round(sdDJIAClose/avgDJIAClose,5))
+resultsDF[nrow(resultsDF) + 1,] <- list("DowJones","DJIA",dateRangeStartDJIA, dateRangeEndDJIA,
+                                        "Adjusted_Close_Price", avgDJIAAdjClose,  sdDJIAAdjClose,
+                                        round(sdDJIAAdjClose/avgDJIAAdjClose,5))
+# Display the data
+resultsDF[which (resultsDF$Stock_Symbol == "DJIA"),]
+
+# Plot the graph
+library(ggplot2)
+ggplot(resultsDF, aes(resultsDF$Price_Type, resultsDF$CV )) + geom_point(aes(color = resultsDF$Stock_Name)) + ggtitle("Comparison of Coefficient of Variation") + labs(x = "Price Type", y = "Coefficient of Variation") + labs(color='Stock Name')
+
+```
+  
+On comparison with Dow Jones Industrial Average, we find the Coefficient of Variation for Sears is much higher and that of Walmart is lower. This signifies Sears had a higher risk-return ratio than the industrial average. Walmart had a further lower risk-return ratio than Dow Jones.  
+
+ **Thus, Walmart had the least risk-return ratio, making it the safest bet as it outperformed Dow Jones Coefficient of Variation. Sears had high risk-return ratio, even more than Dow Jones; thus, making it the most risky bet.**
+
+```{r Solution - 10.f}
+#-------------------------------------------------------------------------------------------------------
+# (e) Calculate Mean and the Standard deviation of the daily market price of holding 100 stocks of 
+#     Walmart for 3 months
+#-------------------------------------------------------------------------------------------------------
+#Create new dataframe for storing the portfolio data
+dfWMTHolding <- WalmartPrice[,1:6] # Removed the volume column
+dfWMTHolding$Quantity <- 100
+dfWMTHolding$PrtflOpen <- dfWMTHolding$Quantity * dfWMTHolding$Open
+dfWMTHolding$PrtflHigh <- dfWMTHolding$Quantity * dfWMTHolding$High
+dfWMTHolding$PrtflLow <- dfWMTHolding$Quantity * dfWMTHolding$Low
+dfWMTHolding$PrtflClose <- dfWMTHolding$Quantity * dfWMTHolding$Close
+dfWMTHolding$PrtflAdjClose <- dfWMTHolding$Quantity * dfWMTHolding$Adj.Close
+
+#Calculate the average prices
+avgHldngOpen <- mean(dfWMTHolding$PrtflOpen)
+avgHldngHigh <- mean(dfWMTHolding$PrtflHigh)
+avgHldngLow <- mean(dfWMTHolding$PrtflLow)
+avgHldngClose <- mean(dfWMTHolding$PrtflClose)
+avgHldngAdjClose <- mean(dfWMTHolding$PrtflAdjClose)
+#Calculate the standard deviations of the prices
+sdHldngOpen <- round(sd(dfWMTHolding$PrtflOpen), digits = 5)
+sdHldngHigh <- round(sd(dfWMTHolding$PrtflHigh), digits = 5)
+sdHldngLow <- round(sd(dfWMTHolding$PrtflLow), digits = 5)
+sdHldngClose <- round(sd(dfWMTHolding$PrtflClose), digits = 5)
+sdHldngAdjClose <- round(sd(dfWMTHolding$PrtflAdjClose), digits = 5)
+dateRangeStartHldng <- min(dfWMTHolding$Date)
+dateRangeEndHldng <- max(dfWMTHolding$Date)
+
+# Store the results into a dataframe
+prtflAnalysisDF <- data.frame("Walmart","WMT",dateRangeStartHldng, dateRangeEndHldng, 
+                        "Open_Market_Value", avgHldngOpen, sdHldngOpen, 
+                        stringsAsFactors = FALSE)
+
+# All column names to the dataframe
+colnames(prtflAnalysisDF) <- list("Stock_Name","Stock_Symbol","Start_Date","End_Date","Market_Value_Type",
+                            "Mean_MV", "SD_MV")
+
+prtflAnalysisDF[nrow(prtflAnalysisDF) + 1,] <- list("Walmart","WMT",
+                                               dateRangeStartHldng, dateRangeEndHldng,
+                                              "High_Market_Value", avgHldngHigh,  sdHldngHigh)
+prtflAnalysisDF[nrow(prtflAnalysisDF) + 1,] <- list("Walmart","WMT",
+                                               dateRangeStartHldng, dateRangeEndHldng,
+                                               "Low_Market_Value", avgHldngLow,  sdHldngLow)
+prtflAnalysisDF[nrow(prtflAnalysisDF) + 1,] <- list("Walmart","WMT",
+                                               dateRangeStartHldng, dateRangeEndHldng,
+                                               "Close_Market_Value", avgHldngClose,  sdHldngClose)
+prtflAnalysisDF[nrow(prtflAnalysisDF) + 1,] <- list("Walmart","WMT",
+                                              dateRangeStartHldng, dateRangeEndHldng,
+                                              "Adjusted_Close_Market_Value", avgHldngAdjClose,
+                                               sdHldngAdjClose)
+prtflAnalysisDF
+```
